@@ -15,6 +15,9 @@ tap.test('detector', (assert) => {
     detector(alf['1.0.0'])
       .then((result) => assert.same(result, { data: alf['1.0.0'], format: 'ALF', version: '1.0.0' }, 'should detect ALF v1.0.0 successfully')),
 
+    detector(alf['1.1.0'])
+      .then((result) => assert.same(result, { data: alf['1.1.0'], format: 'ALF', version: '1.1.0' }, 'should detect ALF v1.1.0 successfully')),
+
     detector(alf['2.0.0'])
       .catch((error) => assert.same(error, new Error('already at latest version'), 'should detect ALF v2.0.0 successfully'))
   ])

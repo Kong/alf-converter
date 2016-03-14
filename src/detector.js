@@ -1,25 +1,25 @@
 export default function detector (data = {}) {
   return new Promise((resolve, reject) => {
-    // HAR 1.2
-    if (data.log && data.log.version && data.log.version === '1.2') {
-      resolve({
-        data: data,
-        format: 'HAR',
-        version: '1.2'
-      })
-    }
-
-    // ALF 0.0.1
-    if ((!data.version || data.version === '0.0.1') && data.serviceToken && data.har) {
+    // ALF 2.0.0
+    if (data.creator && data.entries && !data.har && !data.serviceToken && !data.har) {
       resolve({
         data: data,
         format: 'ALF',
-        version: '0.0.1'
+        version: '2.0.0'
+      })
+    }
+
+    // ALF 1.1.0
+    if (data.har && data.version && data.serviceToken && data.har && (data.har.log.entries[0].clientIPAddress || data.har.log.entries[0].request.bodyCaptured)) {
+      resolve({
+        data: data,
+        format: 'ALF',
+        version: '1.1.0'
       })
     }
 
     // ALF 1.0.0
-    if (data.version && data.version === '1.0.0' && data.serviceToken && data.har) {
+    if (data.har && data.version && data.serviceToken && data.har) {
       resolve({
         data: data,
         format: 'ALF',
@@ -27,15 +27,22 @@ export default function detector (data = {}) {
       })
     }
 
-    // ALF 2.0.0
-    if (data.version && data.version === '2.0.0' && data.creator && data.entries) {
-      reject(new Error('already at latest version'))
+    // ALF 0.0.1
+    if (data.har && !data.version && data.serviceToken && data.har) {
+      resolve({
+        data: data,
+        format: 'ALF',
+        version: '0.0.1'
+      })
+    }
 
-      // resolve({
-      //   data: data,
-      //   format: 'ALF',
-      //   version: '2.0.0'
-      // })
+    // HAR 1.2
+    if (!data.har && data.log && data.log.version && data.log.version === '1.2') {
+      resolve({
+        data: data,
+        format: 'HAR',
+        version: '1.2'
+      })
     }
 
     reject(new Error('unknown format'))

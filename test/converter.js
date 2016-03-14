@@ -14,33 +14,33 @@ tap.test('converter', (assert) => {
 
   return Promise.all([
     converter(har, options)
-      .then((alf) => validator(alf, '2.0.0', true))
+      .then((alf) => validator(alf, '1.1.0', true))
       .then((alf) => {
         // add missing data
-        alf.service.environment = 'PRODUCTION'
-        alf.entries[0].serverIPAddress = '10.10.10.10'
-        alf.entries[0].clientIPAddress = '10.10.10.20'
+        alf.environment = 'PRODUCTION'
+        alf.har.log.entries[0].serverIPAddress = '10.10.10.10'
+        alf.har.log.entries[0].clientIPAddress = '10.10.10.20'
 
         return alf
       })
-      .then((out) => assert.same(out, alf['2.0.0'], 'should convert HAR v1.2 successfully')),
+      .then((out) => assert.same(out, alf['1.1.0'], 'should convert HAR v1.2 successfully')),
 
     converter(alf['0.0.1'])
-      .then((alf) => validator(alf, '2.0.0', true))
+      .then((alf) => validator(alf, '1.1.0', true))
       .then((alf) => {
         // add missing data
-        alf.service.environment = 'PRODUCTION'
+        alf.environment = 'PRODUCTION'
 
         return alf
       })
       .then((out) => {
-        assert.same(out, alf['2.0.0'], 'should convert ALF v0.0.1 successfully')
+        assert.same(out, alf['1.1.0'], 'should convert ALF v0.0.1 successfully')
       }),
 
     converter(alf['1.0.0'])
-      .then((alf) => validator(alf, '2.0.0', true))
+      .then((alf) => validator(alf, '1.1.0', true))
       .then((out) => {
-        assert.same(out, alf['2.0.0'], 'should convert ALF v1.0.0 successfully')
+        assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully')
       })
   ])
 })

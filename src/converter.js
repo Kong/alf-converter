@@ -56,14 +56,12 @@ const formats = {
             entry.request.bodySize = entry.request.postData.text.length
 
             // convert to new standard
-            entry.request.content = {
-              text: new Buffer(entry.request.postData.text).toString('base64'),
-              encoding: 'base64'
-            }
+            entry.request.postData.text = new Buffer(entry.request.postData.text).toString('base64')
+            entry.request.postData.encoding = 'base64'
           }
 
-          if (entry.request.content && !entry.request.content.text) {
-            delete entry.request.content
+          if (entry.request.postData && !entry.request.postData.text) {
+            delete entry.request.postData
           }
 
           // response body
@@ -77,17 +75,15 @@ const formats = {
             entry.response.bodySize = entry.response.content.text.length
 
             // convert to new standard
-            entry.response.content = {
-              text: new Buffer(entry.response.content.text).toString('base64'),
-              encoding: 'base64'
-            }
+            entry.response.content.text = new Buffer(entry.response.content.text).toString('base64')
+            entry.response.content.encoding = 'base64'
           }
 
           if (entry.response.content && !entry.response.content.text) {
             delete entry.response.content
           }
 
-          entry.request.bodyCaptured = Boolean(entry.request.bodySize > 0 || ~~(entry.request.content && entry.request.content.text && entry.request.content.text.length > 0))
+          entry.request.bodyCaptured = Boolean(entry.request.bodySize > 0 || ~~(entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0))
           entry.response.bodyCaptured = Boolean(entry.response.bodySize > 0 || ~~(entry.response.content && entry.response.content.text && entry.response.content.text.length > 0))
 
           entry.request.bodySize = entry.request.bodySize > -1 ? entry.request.bodySize : 0
@@ -99,25 +95,54 @@ const formats = {
           return entry
         })
 
-        let service = {
-          token: data.serviceToken || serviceToken
-        }
-
-        if (data.environment) {
-          service.environment = data.environment
-        }
-
         resolve({
-          version: '2.0.0',
-          service: service,
-          creator: data.har.log.creator || {
-            name: 'har-converter',
-            version: pkg.version
-          },
-          entries: data.har.log.entries
+          version: '1.1.0',
+          serviceToken: data.serviceToken || serviceToken,
+          environment: data.environment || 'default',
+          har: {
+            log: {
+              creator: data.har.log.creator || {
+                name: 'har-converter',
+                version: pkg.version
+              },
+              entries: data.har.log.entries
+            }
+          }
         })
       })
     }
+
+    // ,
+
+    // '1.1.0': (data, serviceToken) => {
+    //   return new Promise((resolve) => {
+    //     data.har.log.entries = data.har.log.entries.map((entry, index) => {
+    //       if (entry.request.postData) {
+    //         entry.request.content = entry.request.postData
+    //       }
+
+    //       return entry
+    //     })
+
+    //     let service = {
+    //       token: data.serviceToken || serviceToken
+    //     }
+
+    //     if (data.environment) {
+    //       service.environment = data.environment
+    //     }
+
+    //     resolve({
+    //       version: '2.0.0',
+    //       service: service,
+    //       creator: data.har.log.creator || {
+    //         name: 'har-converter',
+    //         version: pkg.version
+    //       },
+    //       entries: data.har.log.entries
+    //     })
+    //   })
+    // }
   }
 }
 
@@ -135,7 +160,7 @@ const sequence = {
     },
     '1.0.0': {
       format: 'ALF',
-      version: '2.0.0'
+      version: '1.1.0'
     }
   }
 }
