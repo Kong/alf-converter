@@ -2,10 +2,10 @@
   "name": "alf-converter",
   "description": "unnamed package",
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
-  "homepage": "https://github.com/mashape/alf-converter",
+  "homepage": "https://github.com/Mashape/alf-converter",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mashape/alf-converter.git"
+    "url": "https://github.com/Mashape/alf-converter.git"
   },
   "license": "ISC",
   "main": "lib/index.js",
@@ -23,7 +23,7 @@
     "src"
   ],
   "bugs": {
-    "url": "https://github.com/mashape/alf-converter/issues"
+    "url": "https://github.com/Mashape/alf-converter/issues"
   },
   "scripts": {
     "compile": "babel -q src --out-dir lib",
@@ -70,7 +70,7 @@
     "cz-conventional-changelog": "^1.1.5",
     "echint": "^1.5.3",
     "nyc": "^6.1.0",
-    "semantic-release": "^6.2.0",
+    "semantic-release": "^4.3.5",
     "standard": "^6.0.8",
     "tap": "^5.7.0",
     "tap-mocha-reporter": "0.0.24"
