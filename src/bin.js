@@ -1,51 +1,92 @@
 #!/usr/bin/env node
 
-import cmd from 'commander'
-import pkg from '../package'
-import fs from 'fs'
-import path from 'path'
+import chalk from 'chalk'
 import converter from './converter'
 import detector from './detector'
-import chalk from 'chalk'
+import furmat from 'furmat'
+import yargs from 'yargs'
+import { buffer as stdin } from 'get-stdin'
+import { read, write, parse } from './utils'
 
-cmd
-  .version(pkg.version)
-  .usage('[options] <files...>')
-  .option('-f, --format <format>', 'source file format (default, auto-detect)')
-  .option('-v, --version <version>', 'source file format version (default, auto-detect)')
-  .option('-o, --output <file>', 'Write output to <file> instead of stdout')
-  .parse(process.argv)
+const format = furmat()
+const options = {
+  'format': {
+    alias: 'f',
+    demand: false,
+    describe: 'source file format'
+  },
 
-if (!cmd.args.length) {
-  cmd.help()
+  'version': {
+    alias: 'v',
+    demand: false,
+    describe: 'source file schema version'
+  },
+
+  'output': {
+    alias: 'o',
+    demand: false,
+    describe: 'write output to <file>',
+    type: 'string'
+  },
+
+  'token': {
+    alias: 't',
+    demand: false,
+    describe: 'use <token> for missing service.token',
+    type: 'string'
+  },
+
+  'help': {
+    alias: 'h'
+  }
 }
 
-cmd.args.map((fileName) => {
-  let file = chalk.yellow.italic(path.basename(fileName))
+stdin().then((stdin) => {
+  let argv = yargs
+    .demand(stdin.length ? 0 : 1)
+    .usage('Usage: $0 <file...> [options]')
+    .help('help')
+    .options(options)
+    .argv
 
-  new Promise((resolve, reject) => {
-    fs.readFile(fileName, (err, data) => err === null ? resolve(data) : reject(err))
+  // add stdin to list of files
+  if (stdin.length) {
+    argv._.push(stdin)
+  }
+
+  argv._.forEach((file) => {
+    read(file)
+      .then(parse)
+      .then((file) => {
+        return detector(file.content, argv.format, argv.version)
+          .then((result) => {
+            console.log(format('%s:green [%s:yellow:italic] is %s version: %s', '✔️', file.name, chalk.cyan(result.format), chalk.magenta(result.version)))
+
+            if (argv.token) result.serviceToken = argv.token
+
+            return result
+          })
+
+          .then((result) => converter(result.data, result))
+          .then((output) => {
+            if (!argv.output) {
+              return console.log(output)
+            }
+
+            return write(argv.output, output).then(() => console.log(format('%s:green [%s:yellow:italic] converted successfully to latest ALF at %s:magenta', '✔️', file.name, argv.output)))
+          })
+      })
+
+      .catch((err) => {
+        if (err instanceof SyntaxError) {
+          return console.error(format('%s:red [%s:yellow:italic] failed to read JSON: %s:red', '✖', err.file, err.message))
+        }
+
+        if (err.code === 'ENOENT') {
+          return console.error(format('%s:red [%s:yellow:italic] %s:red', '✖', err.file, 'no such file or directory'))
+        }
+
+        console.error(format('%s:red [%s:yellow:italic] an unknown error has occured: %s:red', '✖', err.file, err.message))
+      })
   })
-
-  .then(JSON.parse)
-  .then((data) => detector(data, cmd.format, cmd.version))
-  .then((result) => {
-    console.log('%s [%s] is %s version: %s', chalk.green('✔️'), file, chalk.cyan(result.format), chalk.magenta(result.version))
-
-    return result
-  })
-  .then((result) => converter(result.data, result.format, result.version, 'foo'))
-  .then((output) => {
-    if (!cmd.output) {
-      return console.log(output)
-    }
-
-    return new Promise((resolve, reject) => {
-      fs.writeFile(cmd.output, JSON.stringify(output, ' ', 2), (err, data) => err === null ? resolve(data) : reject(err))
-    })
-
-    .then(() => console.log('%s [%s] converted successfully', chalk.green('✔️'), file))
-  })
-
-  .catch((err) => console.error('%s [%s] %s', chalk.red('✖'), file, chalk.red(err.message), chalk.magenta(err.stack)))
 })
