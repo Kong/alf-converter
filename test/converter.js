@@ -1,7 +1,7 @@
-import { har, alf } from './fixtures/'
 import converter from '../src/converter'
-import validator from 'alf-validator'
 import tap from 'tap'
+import validator from 'alf-validator'
+import { har, alf } from './fixtures/'
 
 const options = {
   format: 'har',
@@ -33,14 +33,10 @@ tap.test('converter', (assert) => {
 
         return alf
       })
-      .then((out) => {
-        assert.same(out, alf['1.1.0'], 'should convert ALF v0.0.1 successfully')
-      }),
+      .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v0.0.1 successfully')),
 
     converter(alf['1.0.0'])
       .then((alf) => validator(alf, '1.1.0', true))
-      .then((out) => {
-        assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully')
-      })
+      .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully'))
   ])
 })

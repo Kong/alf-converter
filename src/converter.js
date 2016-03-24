@@ -1,5 +1,5 @@
-import pkg from '../package'
 import detector from './detector'
+import pkg from '../package'
 
 const formats = {
   HAR: {
