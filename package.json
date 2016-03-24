@@ -1,6 +1,6 @@
 {
   "name": "alf-converter",
-  "description": "unnamed package",
+  "description": "Converts ALF data to latest schema version",
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
   "homepage": "https://github.com/Mashape/alf-converter",
   "repository": {
@@ -13,7 +13,8 @@
     "alf-converter": "lib/bin.js"
   },
   "keywords": [
-    "alf-converter"
+    "alf",
+    "converter"
   ],
   "engines": {
     "node": ">=0.10"
