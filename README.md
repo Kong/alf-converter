@@ -116,20 +116,20 @@ detector(data)
 
 [license-url]: http://choosealicense.com/licenses/isc/
 
-[travis-url]: https://travis-ci.org/mashape/alf-converter
-[travis-image]: https://img.shields.io/travis/mashape/alf-converter.svg?style=flat-square
+[travis-url]: https://travis-ci.org/Mashape/alf-converter
+[travis-image]: https://img.shields.io/travis/Mashape/alf-converter.svg?style=flat-square
 
 [npm-url]: https://www.npmjs.com/package/alf-converter
 [npm-license]: https://img.shields.io/npm/l/alf-converter.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/alf-converter.svg?style=flat-square
 [npm-downloads]: https://img.shields.io/npm/dm/alf-converter.svg?style=flat-square
 
-[codeclimate-url]: https://codeclimate.com/github/mashape/alf-converter
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/mashape/alf-converter.svg?style=flat-square
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/mashape/alf-converter.svg?style=flat-square
+[codeclimate-url]: https://codeclimate.com/github/Mashape/alf-converter
+[codeclimate-quality]: https://img.shields.io/codeclimate/github/Mashape/alf-converter.svg?style=flat-square
+[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/Mashape/alf-converter.svg?style=flat-square
 
-[david-url]: https://david-dm.org/mashape/alf-converter
-[david-image]: https://img.shields.io/david/mashape/alf-converter.svg?style=flat-square
+[david-url]: https://david-dm.org/Mashape/alf-converter
+[david-image]: https://img.shields.io/david/Mashape/alf-converter.svg?style=flat-square
 
 [har-spec]: https://github.com/ahmadnassri/har-spec "HAR Spec"
 [alf-spec]: https://github.com/Mashape/api-log-format "ALF Spec"
