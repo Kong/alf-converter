@@ -4,6 +4,7 @@ import converter from './converter'
 import detector from './detector'
 import furmat from 'furmat'
 import validate from 'alf-validator'
+import ALFError from 'alf-validator/lib/error'
 import yargs from 'yargs'
 import { buffer as stdin } from 'get-stdin'
 import { read, write, parse } from './utils'
@@ -79,18 +80,24 @@ stdin().then((stdin) => {
 
             return write(argv.output, output).then(() => console.log(format('%s:green [%s:yellow:italic] converted successfully to latest ALF at %s:magenta', '✔️', file.name, argv.output)))
           })
+
+          .catch((err) => {
+            if (err instanceof ALFError) {
+              return err.errors.forEach((details) => console.error(format('%s:red [%s:yellow:italic] failed validation: %s:red (%s:cyan:italic: %s:magenta:italic)', '✖', file.name, details.message, details.field, details.value)))
+            }
+          })
       })
 
       .catch((err) => {
-        if (err instanceof SyntaxError) {
-          return console.error(format('%s:red [%s:yellow:italic] failed to read JSON: %s:red', '✖', err.file, err.message))
-        }
-
         if (err.code === 'ENOENT') {
           return console.error(format('%s:red [%s:yellow:italic] %s:red', '✖', err.file, 'no such file or directory'))
         }
 
-        console.error(format('%s:red [%s:yellow:italic] an unknown error has occured: %s:red', '✖', err.file, err.message))
+        if (err instanceof SyntaxError) {
+          return console.error(format('%s:red [%s:yellow:italic] failed to read JSON: %s:red', '✖', err.file, err.message))
+        }
+
+        console.error(format('%s:red an unknown error has occured: %s:red', '✖', err.message))
       })
   })
 })
