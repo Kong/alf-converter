@@ -19,7 +19,7 @@ export function read (name) {
 
 export function write (name, content) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(name, JSON.stringify(content, ' ', 2), (err, data) => {
+    fs.writeFile(name, content, (err, data) => {
       if (err) {
         err.file = name
         return reject(err)

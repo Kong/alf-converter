@@ -3,39 +3,40 @@
 import converter from './converter'
 import detector from './detector'
 import furmat from 'furmat'
+import validate from 'alf-validator'
 import yargs from 'yargs'
 import { buffer as stdin } from 'get-stdin'
 import { read, write, parse } from './utils'
 
 const format = furmat()
 const options = {
-  'format': {
+  format: {
     alias: 'f',
     demand: false,
     describe: 'source file format'
   },
 
-  'version': {
+  version: {
     alias: 'v',
     demand: false,
     describe: 'source file schema version'
   },
 
-  'output': {
+  output: {
     alias: 'o',
     demand: false,
     describe: 'write output to <file>',
     type: 'string'
   },
 
-  'token': {
+  token: {
     alias: 't',
     demand: false,
     describe: 'use <token> for missing service.token',
     type: 'string'
   },
 
-  'help': {
+  help: {
     alias: 'h'
   }
 }
@@ -67,7 +68,11 @@ stdin().then((stdin) => {
           })
 
           .then((result) => converter(result.data, result))
-          .then((output) => {
+          // strip additional properties
+          .then((result) => validate(result, 'latest', true))
+          .then((result) => {
+            let output = JSON.stringify(result, null, 2)
+
             if (!argv.output) {
               return console.log(output)
             }
