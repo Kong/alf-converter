@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import chalk from 'chalk'
 import converter from './converter'
 import detector from './detector'
 import furmat from 'furmat'
@@ -60,7 +59,7 @@ stdin().then((stdin) => {
       .then((file) => {
         return detector(file.content, argv.format, argv.version)
           .then((result) => {
-            console.log(format('%s:green [%s:yellow:italic] is %s version: %s', '✔️', file.name, chalk.cyan(result.format), chalk.magenta(result.version)))
+            console.log(format('%s:green [%s:yellow:italic] is %s:cyan version: %s:magenta', '✔️', file.name, result.format, result.version))
 
             if (argv.token) result.serviceToken = argv.token
 
