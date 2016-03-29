@@ -2,6 +2,8 @@ import converter from '../src/converter'
 import tap from 'tap'
 import validate from 'alf-validator'
 import { har, alf } from './fixtures/'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
 const options = {
   format: 'har',
@@ -10,7 +12,9 @@ const options = {
 }
 
 tap.test('converter', (assert) => {
-  assert.plan(3)
+  assert.plan(5)
+
+  let image = readFileSync(join(__dirname, 'fixtures', 'mashape-logo.png'))
 
   return Promise.all([
     converter(har, options)
@@ -38,6 +42,15 @@ tap.test('converter', (assert) => {
 
     converter(alf['1.0.0'])
       .then((alf) => validate(alf, '1.1.0', true))
-      .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully'))
+      .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully')),
+
+    converter(alf['1.0.0-binary'])
+      .then((alf) => validate(alf, '1.1.0', true))
+      .then((out) => {
+        var binary = new Buffer(out.har.log.entries[0].request.postData.text, 'base64')
+
+        assert.same(out, alf['1.1.0-binary'], 'should convert ALF v1.0.0 with binary data successfully')
+        assert.same(binary, image, 'should manage binary data appropriately')
+      })
   ])
 })

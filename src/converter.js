@@ -49,7 +49,7 @@ const formats = {
           if (entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0) {
             // if already encoded
             if (entry.request.postData.encoding && entry.request.postData.encoding === 'base64') {
-              entry.request.postData.text = new Buffer(entry.request.postData.text, 'base64').toString()
+              entry.request.postData.text = new Buffer(entry.request.postData.text, 'base64')
             }
 
             // set bodySize
@@ -68,7 +68,7 @@ const formats = {
           if (entry.response.content && entry.response.content.text && entry.response.content.text.length > 0) {
             // if already encoded
             if (entry.response.content.encoding && entry.response.content.encoding === 'base64') {
-              entry.response.content.text = new Buffer(entry.response.content.text, 'base64').toString()
+              entry.response.content.text = new Buffer(entry.response.content.text, 'base64')
             }
 
             // set bodySize

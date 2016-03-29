@@ -52,7 +52,8 @@
   },
   "echint": {
     "ignore": [
-      "lib/**"
+      "lib/**",
+      "test/fixtures/*.png"
     ]
   },
   "config": {
