@@ -34,10 +34,13 @@ tap.test('converter', (assert) => {
         return alf
       })
       .then((result) => validate(result, 'latest', true))
-      .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v0.0.1 successfully')),
+      .then((out) => assert.match(out, alf['1.1.0'], 'should convert ALF v0.0.1 successfully'))
+      .catch((err) => console.log(1, err)),
 
     converter(alf['1.0.0'])
       .then((alf) => validate(alf, '1.1.0', true))
-      .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully'))
+      .then((out) => assert.match(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully'))
+      .catch((err) => console.log(2, err))
   ])
+  .catch((err) => console.log(3, err))
 })
