@@ -31,6 +31,7 @@
             "bodyCaptured": true,
             "bodySize": 25,
             "postData": {
+              "mimeType": "application/json",
               "text": "eyJmb28iOiJiYXIiLCJiYXoiOiJoZXkifQ==",
               "encoding": "base64"
             }
@@ -45,6 +46,7 @@
               { "name": "x-powered-by",   "value": "mockbin" }
             ],
             "content": {
+              "mimeType": "application/json",
               "text": "eyJmb28iOiJiYXIiLCJiYXoiOiJoZXkifQ==",
               "encoding": "base64"
             },
@@ -53,6 +55,8 @@
             "bodySize": 25
           },
           "timings": {
+            "blocked": -1,
+            "connect": -1,
             "send": 0.06,
             "wait": 87.26,
             "receive": 0.24

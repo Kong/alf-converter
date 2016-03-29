@@ -64,9 +64,9 @@
         },
         "cache": {},
         "timings": {
-          "blocked": 12.4230000001262,
+          "blocked": -1,
           "dns": 0.004000001354100391,
-          "connect": 35.9200000020792,
+          "connect": -1,
           "send": 0.06,
           "wait": 87.26,
           "receive": 0.24,

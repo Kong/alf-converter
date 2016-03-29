@@ -66,7 +66,7 @@
           },
           "cache": {},
           "timings": {
-            "blocked": 0.381000001652865,
+            "blocked": -1,
             "dns": -1,
             "connect": -1,
             "send": 0.06,
