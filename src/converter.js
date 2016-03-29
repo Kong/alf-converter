@@ -45,38 +45,8 @@ const formats = {
             entry.clientIPAddress = data.clientIPAddress
           }
 
-          // request body
-          if (entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0) {
-            // if already encoded
-            if (entry.request.postData.encoding && entry.request.postData.encoding === 'base64') {
-              entry.request.postData.text = new Buffer(entry.request.postData.text, 'base64').toString()
-            }
-
-            // set bodySize
-            entry.request.bodySize = entry.request.postData.text.length
-
-            // convert to new standard
-            entry.request.postData.text = new Buffer(entry.request.postData.text).toString('base64')
-            entry.request.postData.encoding = 'base64'
-          }
-
           if (entry.request.postData && !entry.request.postData.text) {
             delete entry.request.postData
-          }
-
-          // response body
-          if (entry.response.content && entry.response.content.text && entry.response.content.text.length > 0) {
-            // if already encoded
-            if (entry.response.content.encoding && entry.response.content.encoding === 'base64') {
-              entry.response.content.text = new Buffer(entry.response.content.text, 'base64').toString()
-            }
-
-            // set bodySize
-            entry.response.bodySize = entry.response.content.text.length
-
-            // convert to new standard
-            entry.response.content.text = new Buffer(entry.response.content.text).toString('base64')
-            entry.response.content.encoding = 'base64'
           }
 
           if (entry.response.content && !entry.response.content.text) {
