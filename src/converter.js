@@ -55,7 +55,7 @@ const formats = {
             }
 
             // create buffer
-            let buffer = new Buffer(entry.response.content.text, encoding)
+            let buffer = new Buffer(entry.request.postData.text, encoding)
 
             // set new values
             entry.request.bodySize = buffer.length // we used to reply on postData.size
