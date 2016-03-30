@@ -38,10 +38,6 @@ npm install --save alf-converter
 // default, ES5 (pre-compiled)
 import converter from 'alf-converter/lib/converter'
 import detector from 'alf-converter/lib/detector'
-
-// ES2015 (srouce)
-import converter from 'alf-converter/src/converter'
-import detector from 'alf-converter/src/detector'
 ```
 
 ###### Require
