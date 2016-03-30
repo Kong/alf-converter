@@ -12,7 +12,7 @@ const options = {
 }
 
 tap.test('converter', (assert) => {
-  assert.plan(5)
+  assert.plan(6)
 
   let image = readFileSync(join(__dirname, 'fixtures', 'mashape-logo.png'))
 
@@ -51,6 +51,10 @@ tap.test('converter', (assert) => {
 
         assert.same(out, alf['1.1.0-binary'], 'should convert ALF v1.0.0 with binary data successfully')
         assert.same(binary, image, 'should manage binary data appropriately')
-      })
+      }),
+
+    Promise.resolve(converter(alf['1.0.0-without-bodies']))
+      .then((alf) => validate(alf, '1.1.0', true))
+      .then((out) => assert.same(out, alf['1.1.0-without-bodies'], 'should convert ALF v1.0.0 without body data successfully'))
   ])
 })

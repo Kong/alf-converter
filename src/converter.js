@@ -86,8 +86,8 @@ const formats = {
           delete entry.response.content
         }
 
-        entry.request.bodyCaptured = Boolean(entry.request.bodySize > 0 || ~~(entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0))
-        entry.response.bodyCaptured = Boolean(entry.response.bodySize > 0 || ~~(entry.response.content && entry.response.content.text && entry.response.content.text.length > 0))
+        entry.request.bodyCaptured = Boolean(entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0)
+        entry.response.bodyCaptured = Boolean(entry.response.content && entry.response.content.text && entry.response.content.text.length > 0)
 
         entry.request.bodySize = entry.request.bodySize > -1 ? entry.request.bodySize : 0
         entry.response.bodySize = entry.response.bodySize > -1 ? entry.response.bodySize : 0
