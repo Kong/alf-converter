@@ -4,120 +4,114 @@ import pkg from '../package'
 const formats = {
   HAR: {
     '1.2': (data, serviceToken) => {
-      return new Promise((resolve) => {
-        data.log.entries = data.log.entries.map((entry) => {
-          entry.request.content = entry.request.postData
-          return entry
-        })
-
-        resolve({
-          version: '0.0.1',
-          serviceToken,
-          har: data
-        })
+      data.log.entries = data.log.entries.map((entry) => {
+        entry.request.content = entry.request.postData
+        return entry
       })
+
+      return {
+        version: '0.0.1',
+        serviceToken,
+        har: data
+      }
     }
   },
 
   ALF: {
     '0.0.1': (data, serviceToken) => {
-      return new Promise((resolve) => {
-        data.har.log.entries = data.har.log.entries.map((entry) => {
-          if (entry.request.content && !entry.request.postData) {
-            entry.request.postData = entry.request.content
-          }
+      data.har.log.entries = data.har.log.entries.map((entry) => {
+        if (entry.request.content && !entry.request.postData) {
+          entry.request.postData = entry.request.content
+        }
 
-          return entry
-        })
-
-        resolve({
-          version: '1.0.0',
-          serviceToken: data.serviceToken || serviceToken,
-          har: data.har
-        })
+        return entry
       })
+
+      return {
+        version: '1.0.0',
+        serviceToken: data.serviceToken || serviceToken,
+        har: data.har
+      }
     },
 
     '1.0.0': (data, serviceToken) => {
-      return new Promise((resolve) => {
-        data.har.log.entries = data.har.log.entries.map((entry, index) => {
-          if (data.clientIPAddress) {
-            entry.clientIPAddress = data.clientIPAddress
+      data.har.log.entries = data.har.log.entries.map((entry, index) => {
+        if (data.clientIPAddress) {
+          entry.clientIPAddress = data.clientIPAddress
+        }
+
+        // request body
+        if (entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0) {
+          let encoding = 'utf8'
+
+          // should this be treted as base64 source?
+          if (entry.request.postData.encoding && entry.request.postData.encoding === 'base64') {
+            encoding = 'base64'
           }
 
-          // request body
-          if (entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0) {
-            let encoding = 'utf8'
+          // create buffer
+          let buffer = new Buffer(entry.request.postData.text, encoding)
 
-            // should this be treted as base64 source?
-            if (entry.request.postData.encoding && entry.request.postData.encoding === 'base64') {
-              encoding = 'base64'
-            }
+          // set new values
+          entry.request.bodySize = buffer.length // we used to reply on postData.size
+          entry.request.postData.encoding = 'base64'
+          entry.request.postData.text = buffer.toString('base64')
+        }
 
-            // create buffer
-            let buffer = new Buffer(entry.request.postData.text, encoding)
+        // delete entire object if no data is present
+        if (entry.request.postData && !entry.request.postData.text) {
+          delete entry.request.postData
+        }
 
-            // set new values
-            entry.request.bodySize = buffer.length // we used to reply on postData.size
-            entry.request.postData.encoding = 'base64'
-            entry.request.postData.text = buffer.toString('base64')
+        // response body
+        if (entry.response.content && entry.response.content.text && entry.response.content.text.length > 0) {
+          let encoding = 'utf8'
+
+          // should this be treted as base64 source?
+          if (entry.response.content.encoding && entry.response.content.encoding === 'base64') {
+            encoding = 'base64'
           }
 
-          // delete entire object if no data is present
-          if (entry.request.postData && !entry.request.postData.text) {
-            delete entry.request.postData
-          }
+          // create buffer
+          let buffer = new Buffer(entry.response.content.text, encoding)
 
-          // response body
-          if (entry.response.content && entry.response.content.text && entry.response.content.text.length > 0) {
-            let encoding = 'utf8'
+          // set new values
+          entry.response.bodySize = buffer.length // we used to reply on content.size
+          entry.response.content.encoding = 'base64'
+          entry.response.content.text = buffer.toString('base64')
+        }
 
-            // should this be treted as base64 source?
-            if (entry.response.content.encoding && entry.response.content.encoding === 'base64') {
-              encoding = 'base64'
-            }
+        // delete entire object if no data is present
+        if (entry.response.content && !entry.response.content.text) {
+          delete entry.response.content
+        }
 
-            // create buffer
-            let buffer = new Buffer(entry.response.content.text, encoding)
+        entry.request.bodyCaptured = Boolean(entry.request.bodySize > 0 || ~~(entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0))
+        entry.response.bodyCaptured = Boolean(entry.response.bodySize > 0 || ~~(entry.response.content && entry.response.content.text && entry.response.content.text.length > 0))
 
-            // set new values
-            entry.response.bodySize = buffer.length // we used to reply on content.size
-            entry.response.content.encoding = 'base64'
-            entry.response.content.text = buffer.toString('base64')
-          }
+        entry.request.bodySize = entry.request.bodySize > -1 ? entry.request.bodySize : 0
+        entry.response.bodySize = entry.response.bodySize > -1 ? entry.response.bodySize : 0
 
-          // delete entire object if no data is present
-          if (entry.response.content && !entry.response.content.text) {
-            delete entry.response.content
-          }
+        entry.request.headersSize = entry.request.headersSize > -1 ? entry.request.headersSize : 0
+        entry.response.headersSize = entry.response.headersSize > -1 ? entry.response.headersSize : 0
 
-          entry.request.bodyCaptured = Boolean(entry.request.bodySize > 0 || ~~(entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0))
-          entry.response.bodyCaptured = Boolean(entry.response.bodySize > 0 || ~~(entry.response.content && entry.response.content.text && entry.response.content.text.length > 0))
-
-          entry.request.bodySize = entry.request.bodySize > -1 ? entry.request.bodySize : 0
-          entry.response.bodySize = entry.response.bodySize > -1 ? entry.response.bodySize : 0
-
-          entry.request.headersSize = entry.request.headersSize > -1 ? entry.request.headersSize : 0
-          entry.response.headersSize = entry.response.headersSize > -1 ? entry.response.headersSize : 0
-
-          return entry
-        })
-
-        resolve({
-          version: '1.1.0',
-          serviceToken: data.serviceToken || serviceToken,
-          environment: data.environment || 'default',
-          har: {
-            log: {
-              creator: data.har.log.creator || {
-                name: 'har-converter',
-                version: pkg.version
-              },
-              entries: data.har.log.entries
-            }
-          }
-        })
+        return entry
       })
+
+      return {
+        version: '1.1.0',
+        serviceToken: data.serviceToken || serviceToken,
+        environment: data.environment || 'default',
+        har: {
+          log: {
+            creator: data.har.log.creator || {
+              name: 'har-converter',
+              version: pkg.version
+            },
+            entries: data.har.log.entries
+          }
+        }
+      }
     }
 
     // ,
@@ -186,9 +180,9 @@ export default function converter (data, options) {
     let { format, version } = sequence[options.format][options.version]
 
     // run converstion step
-    return formats[options.format][options.version]
-      .call(this, data, options.serviceToken)
-      .then((data) => converter.call(this, data, { format, version, serviceToken: options.serviceToken }))
+    let result = formats[options.format][options.version].call(this, data, options.serviceToken)
+
+    return converter.call(this, result, { format, version, serviceToken: options.serviceToken })
   }
 
   return data

@@ -17,7 +17,7 @@ tap.test('converter', (assert) => {
   let image = readFileSync(join(__dirname, 'fixtures', 'mashape-logo.png'))
 
   return Promise.all([
-    converter(har, options)
+    Promise.resolve(converter(har, options))
       .then((alf) => validate(alf, '1.1.0', true))
       .then((alf) => {
         // add missing data
@@ -29,7 +29,7 @@ tap.test('converter', (assert) => {
       })
       .then((out) => assert.same(out, alf['1.1.0'], 'should convert HAR v1.2 successfully')),
 
-    converter(alf['0.0.1'])
+    Promise.resolve(converter(alf['0.0.1']))
       .then((alf) => validate(alf, '1.1.0', true))
       .then((alf) => {
         // add missing data
@@ -40,11 +40,11 @@ tap.test('converter', (assert) => {
       .then((result) => validate(result, 'latest', true))
       .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v0.0.1 successfully')),
 
-    converter(alf['1.0.0'])
+    Promise.resolve(converter(alf['1.0.0']))
       .then((alf) => validate(alf, '1.1.0', true))
       .then((out) => assert.same(out, alf['1.1.0'], 'should convert ALF v1.0.0 successfully')),
 
-    converter(alf['1.0.0-binary'])
+    Promise.resolve(converter(alf['1.0.0-binary']))
       .then((alf) => validate(alf, '1.1.0', true))
       .then((out) => {
         var binary = new Buffer(out.har.log.entries[0].request.postData.text, 'base64')
