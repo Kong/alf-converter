@@ -47,38 +47,46 @@ const formats = {
 
           // request body
           if (entry.request.postData && entry.request.postData.text && entry.request.postData.text.length > 0) {
-            // if already encoded
+            let encoding = 'utf8'
+
+            // should this be treted as base64 source?
             if (entry.request.postData.encoding && entry.request.postData.encoding === 'base64') {
-              entry.request.postData.text = new Buffer(entry.request.postData.text, 'base64')
+              encoding = 'base64'
             }
 
-            // set bodySize
-            entry.request.bodySize = entry.request.postData.text.length
+            // create buffer
+            let buffer = new Buffer(entry.response.content.text, encoding)
 
-            // convert to new standard
-            entry.request.postData.text = new Buffer(entry.request.postData.text).toString('base64')
+            // set new values
+            entry.request.bodySize = buffer.length // we used to reply on postData.size
             entry.request.postData.encoding = 'base64'
+            entry.request.postData.text = buffer.toString('base64')
           }
 
+          // delete entire object if no data is present
           if (entry.request.postData && !entry.request.postData.text) {
             delete entry.request.postData
           }
 
           // response body
           if (entry.response.content && entry.response.content.text && entry.response.content.text.length > 0) {
-            // if already encoded
+            let encoding = 'utf8'
+
+            // should this be treted as base64 source?
             if (entry.response.content.encoding && entry.response.content.encoding === 'base64') {
-              entry.response.content.text = new Buffer(entry.response.content.text, 'base64')
+              encoding = 'base64'
             }
 
-            // set bodySize
-            entry.response.bodySize = entry.response.content.text.length
+            // create buffer
+            let buffer = new Buffer(entry.response.content.text, encoding)
 
-            // convert to new standard
-            entry.response.content.text = new Buffer(entry.response.content.text).toString('base64')
+            // set new values
+            entry.response.bodySize = buffer.length // we used to reply on content.size
             entry.response.content.encoding = 'base64'
+            entry.response.content.text = buffer.toString('base64')
           }
 
+          // delete entire object if no data is present
           if (entry.response.content && !entry.response.content.text) {
             delete entry.response.content
           }
