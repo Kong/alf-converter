@@ -29,10 +29,10 @@
             ],
             "headersSize": 62,
             "bodyCaptured": true,
-            "bodySize": 25,
+            "bodySize": 13,
             "postData": {
               "mimeType": "application/json",
-              "text": "eyJmb28iOiJiYXIiLCJiYXoiOiJoZXkifQ==",
+              "text": "eyJmb28iOiJiYXIifQ==",
               "encoding": "base64"
             }
           },

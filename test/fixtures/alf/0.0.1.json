@@ -38,7 +38,7 @@
             "content": {
               "size": 23,
               "mimeType": "application/json",
-              "text": "{\"foo\":\"bar\",\"baz\":\"hey\"}",
+              "text": "{\"foo\":\"bar\"}",
               "compression": -17
             },
             "headersSize": 62,

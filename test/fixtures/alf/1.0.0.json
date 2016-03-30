@@ -41,7 +41,7 @@
             "bodySize": 24,
             "postData": {
               "mimeType": "application/json",
-              "text": "{\"foo\":\"bar\",\"baz\":\"hey\"}",
+              "text": "{\"foo\":\"bar\"}",
               "params": [
                 {
                   "name": "foo",
